@@ -30,8 +30,20 @@ def load_users_data():
         with open('users_data.json', 'r', encoding='utf-8') as f:
             return json.load(f)
     except FileNotFoundError:
-        st.error("用户数据文件未找到！")
-        return {}
+        # 如果用户数据文件不存在，创建默认的guest用户
+        default_users = {
+            "guest": {
+                "password": "guest",
+                "name": "访客用户",
+                "email": "guest@example.com",
+                "purchased_courses": [],
+                "purchase_date": "2024-06-21"
+            }
+        }
+        # 创建默认的用户数据文件
+        with open('users_data.json', 'w', encoding='utf-8') as f:
+            json.dump(default_users, f, ensure_ascii=False, indent=2)
+        return default_users
 
 def authenticate_user(username, password):
     """用户认证"""

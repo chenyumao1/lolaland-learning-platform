@@ -1,0 +1,16 @@
+{
+  "guest": {
+    "password": "guest",
+    "name": "访客用户",
+    "email": "guest@example.com",
+    "purchased_courses": [],
+    "purchase_date": "2024-06-21"
+  },
+  "示例用户": {
+    "password": "示例密码",
+    "name": "示例显示名称",
+    "email": "example@email.com",
+    "purchased_courses": ["phonics", "power_up"],
+    "purchase_date": "2024-06-21"
+  }
+} 
