@@ -26,6 +26,17 @@ COURSES = {
 # 用户管理功能
 def load_users_data():
     """加载用户数据"""
+    # 优先尝试从Streamlit Secrets加载用户数据
+    try:
+        if hasattr(st, 'secrets') and 'users' in st.secrets:
+            users_data = {}
+            for username, user_json in st.secrets['users'].items():
+                users_data[username] = json.loads(user_json)
+            return users_data
+    except Exception as e:
+        pass  # 如果Secrets不可用，继续尝试本地文件
+    
+    # 尝试从本地文件加载
     try:
         with open('users_data.json', 'r', encoding='utf-8') as f:
             return json.load(f)
@@ -40,9 +51,12 @@ def load_users_data():
                 "purchase_date": "2024-06-21"
             }
         }
-        # 创建默认的用户数据文件
-        with open('users_data.json', 'w', encoding='utf-8') as f:
-            json.dump(default_users, f, ensure_ascii=False, indent=2)
+        # 创建默认的用户数据文件（仅本地开发时）
+        try:
+            with open('users_data.json', 'w', encoding='utf-8') as f:
+                json.dump(default_users, f, ensure_ascii=False, indent=2)
+        except:
+            pass  # 在Streamlit Cloud上可能没有写权限
         return default_users
 
 def authenticate_user(username, password):
