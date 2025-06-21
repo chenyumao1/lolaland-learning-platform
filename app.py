@@ -1,13 +1,401 @@
 import streamlit as st
 import os
+import json
 from pathlib import Path
+
+# 课程权限配置
+COURSES = {
+    "phonics": {
+        "name": "🔤 Phonics",
+        "description": "26个字母基础学习"
+    },
+    "power_up": {
+        "name": "⚡ Power up", 
+        "description": "Pre/G1/G2 综合能力提升"
+    },
+    "journeys": {
+        "name": "🚀 Journeys",
+        "description": "GK/G1/G2 深度阅读理解"
+    },
+    "grammar_writing": {
+        "name": "✍️ Grammar & Writing",
+        "description": "18个精品语法写作课程"
+    }
+}
+
+# 用户管理功能
+def load_users_data():
+    """加载用户数据"""
+    try:
+        with open('users_data.json', 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        st.error("用户数据文件未找到！")
+        return {}
+
+def authenticate_user(username, password):
+    """用户认证"""
+    users_data = load_users_data()
+    # 将用户名转换为小写进行比较
+    username_lower = username.lower()
+    for user_key, user_data in users_data.items():
+        if user_key.lower() == username_lower:
+            if user_data['password'] == password:
+                return user_data
+    return None
+
+def show_login_page():
+    """显示登录页面"""
+    # 可爱的背景和装饰
+    st.markdown("""
+    <style>
+        .cute-background {
+            background: linear-gradient(135deg, #ffeef8 0%, #f0e6ff 50%, #e6f3ff 100%);
+            padding: 2rem;
+            border-radius: 30px;
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .cute-title {
+            color: #ff6b9d;
+            font-size: 3.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(255,107,157,0.3);
+            animation: bounce 2s infinite;
+        }
+        .cute-subtitle {
+            color: #9c88ff;
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+        .floating-hearts {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+        .heart {
+            position: absolute;
+            color: #ffb3d9;
+            font-size: 1.2rem;
+            animation: float 3s ease-in-out infinite;
+        }
+        .heart:nth-child(1) { left: 10%; animation-delay: 0s; }
+        .heart:nth-child(2) { left: 20%; animation-delay: 0.5s; }
+        .heart:nth-child(3) { left: 80%; animation-delay: 1s; }
+        .heart:nth-child(4) { left: 90%; animation-delay: 1.5s; }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+                 
+        .cute-input {
+            border-radius: 25px !important;
+            border: 2px solid #ffb3d9 !important;
+            padding: 12px 20px !important;
+            font-size: 1.1rem !important;
+        }
+        .cute-input:focus {
+            border-color: #ff6b9d !important;
+            box-shadow: 0 0 10px rgba(255,107,157,0.3) !important;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+    
+    # 可爱的标题区域
+    st.markdown("""
+    <div class="cute-background">
+        <div class="floating-hearts">
+            <div class="heart">💖</div>
+            <div class="heart">🌸</div>
+            <div class="heart">✨</div>
+            <div class="heart">🦄</div>
+        </div>
+        <h1 class="cute-title">🌟 LolaLand 🌈</h1>
+        <p class="cute-subtitle">💫 可爱的英语学习乐园 💫</p>
+        <div style="font-size: 1.5rem; margin-top: 1rem;">
+            🎀 🌸 🦋 🌺 🎈 🌙 ⭐ 🌟
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # 居中的可爱登录表单
+    col1, col2, col3 = st.columns([1, 2, 1])
+    
+    with col2:
+        # 可爱的登录标题
+        st.markdown("""
+        <div style="background: linear-gradient(135deg, #fff0f5 0%, #f0f8ff 100%);
+                    padding: 3rem 2.5rem;
+                    border-radius: 30px;
+                    box-shadow: 0 15px 35px rgba(255,182,193,0.3);
+                    border: 3px solid #ffb3d9;
+                    text-align: center;
+                    margin: 2rem 0;">
+            <h3 style="color: #ff6b9d; margin-bottom: 1rem; font-size: 1.8rem;">
+                🔐 欢迎小可爱登录 🔐
+            </h3>
+            <div style="font-size: 1.2rem; margin-bottom: 2rem;">
+                🌈 🎨 🎪 🎭 🎪 🎨 🌈
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # 用户名输入
+        st.markdown('<label style="color: #ff6b9d; font-weight: bold; margin-bottom: 0.5rem; display: block;">👤 用户名</label>', unsafe_allow_html=True)
+        username = st.text_input("用户名", placeholder="🌟 请输入你的用户名 🌟", key="username_input", label_visibility="collapsed")
+        
+        # 密码输入
+        st.markdown('<label style="color: #ff6b9d; font-weight: bold; margin-bottom: 0.5rem; display: block;">🔑 密码</label>', unsafe_allow_html=True)
+        password = st.text_input("密码", type="password", placeholder="🎀 请输入你的密码 🎀", key="password_input", label_visibility="collapsed")
+        
+        # 登录按钮
+        if st.button("🚀 开始学习之旅 ✨", use_container_width=True):
+            if username and password:
+                user_data = authenticate_user(username, password)
+                if user_data:
+                    st.session_state.current_user = username
+                    st.session_state.user_data = user_data
+                    st.session_state.logged_in = True
+                    st.balloons()  # 添加气球动画
+                    st.success(f"🎉 欢迎回来，{user_data['name']}小可爱！🎉")
+                    st.rerun()
+                else:
+                    st.error("😅 用户名或密码不对哦！请再试试看 💕")
+            else:
+                st.warning("🙈 请填写用户名和密码哦～ 💖")
+        
+        # 底部装饰
+        st.markdown("""
+        <div style="text-align: center; margin-top: 2rem; color: #ff6b9d;">
+            <div style="font-size: 1rem; margin-bottom: 0.5rem;">
+                ✨ 让我们一起快乐学英语吧！✨
+            </div>
+            <div style="font-size: 1.3rem;">
+                🌟 💖 🌈 🦄 🎀 🌸 💫 ⭐
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+# 初始化权限系统
+def initialize_permissions():
+    """初始化用户权限"""
+    # 初始化登录状态
+    if 'logged_in' not in st.session_state:
+        st.session_state.logged_in = False
+    if 'current_user' not in st.session_state:
+        st.session_state.current_user = None
+    if 'user_data' not in st.session_state:
+        st.session_state.user_data = None
+    
+    if 'user_permissions' not in st.session_state:
+        st.session_state.user_permissions = {
+            "phonics": False,
+            "power_up": False, 
+            "journeys": False,
+            "grammar_writing": False
+        }
+    
+    if 'show_admin_panel' not in st.session_state:
+        st.session_state.show_admin_panel = False
+    
+    # 如果用户已登录，根据用户数据设置权限
+    if st.session_state.logged_in and st.session_state.user_data:
+        purchased_courses = st.session_state.user_data.get('purchased_courses', [])
+        for course_key in st.session_state.user_permissions.keys():
+            st.session_state.user_permissions[course_key] = course_key in purchased_courses
+
+def check_course_permission(course_key):
+    """检查用户是否有特定课程的权限"""
+    return st.session_state.user_permissions.get(course_key, False)
+
+def show_user_sidebar():
+    """显示用户侧边栏"""
+    with st.sidebar:
+        # 显示当前登录用户信息
+        if st.session_state.logged_in and st.session_state.user_data:
+            st.markdown("### 👤 用户信息")
+            user_data = st.session_state.user_data
+            st.markdown(f"**用户:** {user_data['name']}")
+            st.markdown(f"**邮箱:** {user_data['email']}")
+            
+            if st.button("退出登录", use_container_width=True):
+                st.session_state.logged_in = False
+                st.session_state.current_user = None
+                st.session_state.user_data = None
+                # 重置权限
+                for key in st.session_state.user_permissions:
+                    st.session_state.user_permissions[key] = False
+                st.rerun()
+        
+        st.markdown("---")
+        
+        # 显示用户权限状态
+        st.markdown("### 📚 我的课程")
+        
+        unlocked_courses = []
+        locked_courses = []
+        
+        for course_key, course_info in COURSES.items():
+            if st.session_state.user_permissions[course_key]:
+                unlocked_courses.append(course_info['name'])
+            else:
+                locked_courses.append(course_info['name'])
+        
+        if unlocked_courses:
+            st.markdown("**✅ 已解锁课程:**")
+            for course in unlocked_courses:
+                st.markdown(f"• {course}")
+        else:
+            st.markdown("**😔 暂无已解锁课程**")
+        
+        if locked_courses:
+            st.markdown("**🔒 未解锁课程:**")
+            for course in locked_courses:
+                st.markdown(f"• {course}")
+
+def show_course_purchase_info(course_key):
+    """显示课程购买信息"""
+    course_info = COURSES[course_key]
+    
+    st.markdown(f"""
+    <div style="background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%); 
+                padding: 2rem; border-radius: 20px; text-align: center; margin: 2rem 0;
+                border: 2px solid #ff6b9d;">
+        <h3 style="color: #d63384; margin-bottom: 1rem;">🔒 课程未解锁</h3>
+        <h4 style="color: #6f42c1; margin-bottom: 1rem;">{course_info['name']}</h4>
+        <p style="color: #495057; font-size: 1.1rem; margin-bottom: 1rem;">{course_info['description']}</p>
+        <p style="color: #6c757d; font-size: 0.9rem;">请联系管理员获取此课程的访问权限</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+def show_locked_tab_content(course_key):
+    """显示锁定状态的标签页内容"""
+    course_info = COURSES[course_key]
+    
+    # 显示课程预览信息
+    st.markdown(f'<h2 style="text-align: center; color: #6c757d; font-size: 2.5rem; margin-bottom: 2rem;">{course_info["name"]} 🔒</h2>', unsafe_allow_html=True)
+    
+    # 显示购买信息
+    show_course_purchase_info(course_key)
+    
+    # 显示课程特色预览（但不可交互）
+    st.markdown('<h3 style="color: #6c757d; margin-bottom: 2rem;">🔍 课程预览</h3>', unsafe_allow_html=True)
+    
+    if course_key == "power_up":
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.markdown("""
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                        padding: 2rem; border-radius: 20px; text-align: center; color: white;
+                        opacity: 0.6;">
+                <h4>💪 能力提升</h4>
+                <p>全面提升英语综合能力</p>
+                <p style="color: #ffd700;">🔒 需要解锁</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col2:
+            st.markdown("""
+            <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); 
+                        padding: 2rem; border-radius: 20px; text-align: center; color: white;
+                        opacity: 0.6;">
+                <h4>🎯 分级教学</h4>
+                <p>针对不同年龄段设计</p>
+                <p style="color: #ffd700;">🔒 需要解锁</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col3:
+            st.markdown("""
+            <div style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); 
+                        padding: 2rem; border-radius: 20px; text-align: center; color: #333;
+                        opacity: 0.6;">
+                <h4>⚡ 快速进步</h4>
+                <p>科学的学习进度安排</p>
+                <p style="color: #dc3545;">🔒 需要解锁</p>
+            </div>
+            """, unsafe_allow_html=True)
+    
+    elif course_key == "journeys":
+        col1, col2 = st.columns(2)
+        with col1:
+            st.markdown("""
+            <div style="background: linear-gradient(135deg, #ff7b7b 0%, #ff6b9d 100%); 
+                        padding: 2rem; border-radius: 20px; text-align: center; color: white;
+                        opacity: 0.6;">
+                <h4>📖 阅读理解</h4>
+                <p>培养深度阅读理解能力</p>
+                <p style="color: #ffd700;">🔒 需要解锁</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col2:
+            st.markdown("""
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                        padding: 2rem; border-radius: 20px; text-align: center; color: white;
+                        opacity: 0.6;">
+                <h4>🎭 文学欣赏</h4>
+                <p>探索丰富的文学世界</p>
+                <p style="color: #ffd700;">🔒 需要解锁</p>
+            </div>
+            """, unsafe_allow_html=True)
+    
+    elif course_key == "grammar_writing":
+        st.markdown("""
+        <div style="background: linear-gradient(135deg, #e0e0e0 0%, #f5f5f5 100%); 
+                    padding: 2rem; border-radius: 20px; text-align: center; margin: 2rem 0;
+                    opacity: 0.7;">
+            <h4 style="color: #6c757d;">📚 18个精品课程</h4>
+            <p style="color: #6c757d;">系统性的语法教学和写作训练</p>
+            <p style="color: #dc3545; font-weight: bold;">🔒 请购买课程以查看详细内容</p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    elif course_key == "phonics":
+        # Phonics 预览布局
+        st.markdown('<h4 style="color: #6c757d; text-align: center; margin-bottom: 2rem;">🔍 Level 1 - 字母学习预览</h4>', unsafe_allow_html=True)
+        
+        # 显示部分字母（但不可点击）
+        letters = 'ABCDEF'  # 只显示前6个字母作为预览
+        cols = st.columns(6)
+        for i, letter in enumerate(letters):
+            with cols[i]:
+                st.markdown(f"""
+                <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); 
+                            padding: 1.5rem; border-radius: 15px; text-align: center; 
+                            opacity: 0.6; margin-bottom: 1rem;">
+                    <div style="font-size: 2rem; font-weight: bold; color: white;">
+                        {letter}
+                    </div>
+                    <div style="color: #ffd700; font-size: 0.8rem;">🔒</div>
+                </div>
+                """, unsafe_allow_html=True)
+        
+        st.markdown("""
+        <div style="text-align: center; margin-top: 2rem; color: #6c757d;">
+            <p>还有20个字母等待解锁...</p>
+            <p style="color: #dc3545; font-weight: bold;">🔒 购买后可学习完整的26个字母</p>
+        </div>
+        """, unsafe_allow_html=True)
 
 # 页面配置
 st.set_page_config(
     page_title="LolaLand - 英语学习平台",
     page_icon="🌟",
     layout="wide",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="expanded"
 )
 
 # 自定义CSS样式
@@ -112,6 +500,37 @@ st.markdown("""
         box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     }
     
+    /* 可爱的按钮样式 */
+    .stButton > button {
+        background: linear-gradient(135deg, #ff6b9d 0%, #ffa0c9 100%) !important;
+        color: white !important;
+        border: 2px solid #ff91c7 !important;
+        border-radius: 25px !important;
+        font-weight: bold !important;
+        font-size: 1.1rem !important;
+        padding: 0.8rem 1.5rem !important;
+        box-shadow: 0 4px 15px rgba(255,107,157,0.3) !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    .stButton > button:hover {
+        background: linear-gradient(135deg, #ff4d8a 0%, #ff80b3 100%) !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 20px rgba(255,107,157,0.4) !important;
+    }
+    
+    .stTextInput > div > div > input {
+        border-radius: 20px !important;
+        border: 2px solid #ffb3d9 !important;
+        padding: 12px 20px !important;
+        font-size: 1rem !important;
+    }
+    
+    .stTextInput > div > div > input:focus {
+        border-color: #ff6b9d !important;
+        box-shadow: 0 0 10px rgba(255,107,157,0.3) !important;
+    }
+    
     .video-container {
         background: white;
         padding: 2rem;
@@ -139,6 +558,10 @@ if 'phonics_page' not in st.session_state:
 
 def show_phonics_tab():
     """显示Phonics课程标签页"""
+    # 检查权限
+    if not check_course_permission("phonics"):
+        show_locked_tab_content("phonics")
+        return
     if st.session_state.phonics_page == 'letter_detail':
         show_letter_detail_page()
     else:
@@ -191,20 +614,47 @@ def show_phonics_tab():
                         st.session_state.phonics_page = 'letter_detail'
                         st.rerun()
 
-def show_hmh_tab():
-    """显示HMH Into Reading课程标签页"""
-    st.markdown('<h2 style="text-align: center; color: #4facfe; font-size: 2.5rem; margin-bottom: 2rem;">📖 HMH Into Reading</h2>', unsafe_allow_html=True)
+def show_power_up_tab():
+    """显示Power up课程标签页"""
+    # 检查权限
+    if not check_course_permission("power_up"):
+        show_locked_tab_content("power_up")
+        return
     
-    st.info("🚧 HMH Into Reading 课程正在开发中，敬请期待！")
+    st.markdown('<h2 style="text-align: center; color: #4facfe; font-size: 2.5rem; margin-bottom: 2rem;">⚡ Power up</h2>', unsafe_allow_html=True)
     
-    # 预览功能
+    # Level选择区域
+    st.markdown('<h3 style="color: #667eea; margin-bottom: 1rem;">📚 选择学习等级</h3>', unsafe_allow_html=True)
+    
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        if st.button("Pre", key="power_up_pre", use_container_width=True):
+            st.info("正在进入 Pre 预备级课程")
+        st.markdown('<div style="text-align: center; margin-top: 0.5rem; color: #666; font-size: 0.9rem;">预备级</div>', unsafe_allow_html=True)
+    
+    with col2:
+        if st.button("G1", key="power_up_g1", use_container_width=True):
+            st.info("正在进入 G1 一年级课程")
+        st.markdown('<div style="text-align: center; margin-top: 0.5rem; color: #666; font-size: 0.9rem;">一年级</div>', unsafe_allow_html=True)
+    
+    with col3:
+        if st.button("G2", key="power_up_g2", use_container_width=True):
+            st.info("正在进入 G2 二年级课程")
+        st.markdown('<div style="text-align: center; margin-top: 0.5rem; color: #666; font-size: 0.9rem;">二年级</div>', unsafe_allow_html=True)
+    
+    st.markdown("---")
+    
+    # 课程特色展示
+    st.markdown('<h3 style="color: #667eea; margin-bottom: 2rem;">🌟 课程特色</h3>', unsafe_allow_html=True)
+    
     col1, col2, col3 = st.columns(3)
     with col1:
         st.markdown("""
         <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
                     padding: 2rem; border-radius: 20px; text-align: center; color: white;">
-            <h4>📚 阅读理解</h4>
-            <p>提升阅读技能</p>
+            <h4>💪 能力提升</h4>
+            <p>全面提升英语综合能力</p>
         </div>
         """, unsafe_allow_html=True)
     
@@ -212,8 +662,8 @@ def show_hmh_tab():
         st.markdown("""
         <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); 
                     padding: 2rem; border-radius: 20px; text-align: center; color: white;">
-            <h4>🎯 词汇建设</h4>
-            <p>扩展词汇量</p>
+            <h4>🎯 分级教学</h4>
+            <p>针对不同年龄段设计</p>
         </div>
         """, unsafe_allow_html=True)
     
@@ -221,29 +671,126 @@ def show_hmh_tab():
         st.markdown("""
         <div style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); 
                     padding: 2rem; border-radius: 20px; text-align: center; color: #333;">
-            <h4>✍️ 写作练习</h4>
-            <p>提高写作能力</p>
+            <h4>⚡ 快速进步</h4>
+            <p>科学的学习进度安排</p>
         </div>
         """, unsafe_allow_html=True)
 
-def show_grammar_tab():
-    """显示Grammar and Writing课程标签页"""
-    st.markdown('<h2 style="text-align: center; color: #4facfe; font-size: 2.5rem; margin-bottom: 2rem;">✍️ Grammar and Writing</h2>', unsafe_allow_html=True)
+def show_journeys_tab():
+    """显示Journeys课程标签页"""
+    # 检查权限
+    if not check_course_permission("journeys"):
+        show_locked_tab_content("journeys")
+        return
     
-    st.info("🚧 Grammar and Writing 课程正在开发中，敬请期待！")
+    st.markdown('<h2 style="text-align: center; color: #4facfe; font-size: 2.5rem; margin-bottom: 2rem;">🚀 Journeys</h2>', unsafe_allow_html=True)
     
-    # 预览功能
+    # Level选择区域
+    st.markdown('<h3 style="color: #667eea; margin-bottom: 1rem;">📚 选择学习等级</h3>', unsafe_allow_html=True)
+    
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        if st.button("GK", key="journeys_gk", use_container_width=True):
+            st.info("正在进入 GK 幼儿园课程")
+        st.markdown('<div style="text-align: center; margin-top: 0.5rem; color: #666; font-size: 0.9rem;">幼儿园</div>', unsafe_allow_html=True)
+    
+    with col2:
+        if st.button("G1", key="journeys_g1", use_container_width=True):
+            st.info("正在进入 G1 一年级课程")
+        st.markdown('<div style="text-align: center; margin-top: 0.5rem; color: #666; font-size: 0.9rem;">一年级</div>', unsafe_allow_html=True)
+    
+    with col3:
+        if st.button("G2", key="journeys_g2", use_container_width=True):
+            st.info("正在进入 G2 二年级课程")
+        st.markdown('<div style="text-align: center; margin-top: 0.5rem; color: #666; font-size: 0.9rem;">二年级</div>', unsafe_allow_html=True)
+    
+    st.markdown("---")
+    
+    # 课程特色展示
+    st.markdown('<h3 style="color: #667eea; margin-bottom: 2rem;">🌟 课程特色</h3>', unsafe_allow_html=True)
+    
     col1, col2 = st.columns(2)
     with col1:
         st.markdown("""
         <div style="background: linear-gradient(135deg, #ff7b7b 0%, #ff6b9d 100%); 
                     padding: 2rem; border-radius: 20px; text-align: center; color: white;">
-            <h4>📝 语法基础</h4>
-            <p>掌握英语语法规则</p>
+            <h4>📖 阅读理解</h4>
+            <p>培养深度阅读理解能力</p>
             <ul style="text-align: left; margin-top: 1rem;">
-                <li>句子结构</li>
-                <li>时态运用</li>
-                <li>词性识别</li>
+                <li>文本分析</li>
+                <li>主题理解</li>
+                <li>批判思维</li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col2:
+        st.markdown("""
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                    padding: 2rem; border-radius: 20px; text-align: center; color: white;">
+            <h4>🎭 文学欣赏</h4>
+            <p>探索丰富的文学世界</p>
+            <ul style="text-align: left; margin-top: 1rem;">
+                <li>经典故事</li>
+                <li>诗歌韵律</li>
+                <li>文化背景</li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
+
+def show_grammar_writing_tab():
+    """显示Grammar & Writing课程标签页"""
+    # 检查权限
+    if not check_course_permission("grammar_writing"):
+        show_locked_tab_content("grammar_writing")
+        return
+    
+    st.markdown('<h2 style="text-align: center; color: #4facfe; font-size: 2.5rem; margin-bottom: 2rem;">✍️ Grammar & Writing</h2>', unsafe_allow_html=True)
+    
+    st.markdown('<h3 style="color: #667eea; margin-bottom: 2rem;">📚 18个精品课程</h3>', unsafe_allow_html=True)
+    
+    # 创建18个课程的网格布局
+    lessons = [
+        "Lesson 1: 句子基础", "Lesson 2: 名词单复数", "Lesson 3: 动词时态", 
+        "Lesson 4: 形容词比较", "Lesson 5: 介词用法", "Lesson 6: 疑问句",
+        "Lesson 7: 否定句", "Lesson 8: 连词使用", "Lesson 9: 段落写作",
+        "Lesson 10: 描述文写作", "Lesson 11: 叙述文写作", "Lesson 12: 说明文写作",
+        "Lesson 13: 对话写作", "Lesson 14: 日记写作", "Lesson 15: 信件写作",
+        "Lesson 16: 故事创作", "Lesson 17: 诗歌欣赏", "Lesson 18: 综合练习"
+    ]
+    
+    # 每行显示3个课程
+    rows = [lessons[i:i+3] for i in range(0, len(lessons), 3)]
+    
+    for row in rows:
+        cols = st.columns(3)
+        for i, lesson in enumerate(row):
+            with cols[i]:
+                lesson_num = lesson.split(":")[0].split(" ")[1]
+                lesson_title = lesson.split(": ")[1]
+                
+                if st.button(f"📝 {lesson_title}", key=f"lesson_{lesson_num}", use_container_width=True):
+                    st.info(f"正在进入 {lesson}")
+                
+                st.markdown(f'<div style="text-align: center; margin-top: 0.5rem; color: #666; font-size: 0.9rem;">{lesson.split(":")[0]}</div>', unsafe_allow_html=True)
+    
+    st.markdown("---")
+    
+    # 课程特色展示
+    st.markdown('<h3 style="color: #667eea; margin-bottom: 2rem;">🌟 课程亮点</h3>', unsafe_allow_html=True)
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown("""
+        <div style="background: linear-gradient(135deg, #ff7b7b 0%, #ff6b9d 100%); 
+                    padding: 2rem; border-radius: 20px; text-align: center; color: white;">
+            <h4>📝 语法精讲</h4>
+            <p>系统掌握英语语法规则</p>
+            <ul style="text-align: left; margin-top: 1rem;">
+                <li>基础语法概念</li>
+                <li>实用语法规则</li>
+                <li>语法综合运用</li>
             </ul>
         </div>
         """, unsafe_allow_html=True)
@@ -253,47 +800,12 @@ def show_grammar_tab():
         <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
                     padding: 2rem; border-radius: 20px; text-align: center; color: white;">
             <h4>✏️ 写作训练</h4>
-            <p>提升写作技巧</p>
+            <p>循序渐进提升写作能力</p>
             <ul style="text-align: left; margin-top: 1rem;">
-                <li>段落写作</li>
-                <li>作文结构</li>
-                <li>创意表达</li>
+                <li>多种文体练习</li>
+                <li>创意表达培养</li>
+                <li>写作技巧指导</li>
             </ul>
-        </div>
-        """, unsafe_allow_html=True)
-
-def show_picture_book_tab():
-    """显示Picture Book Reading课程标签页"""
-    st.markdown('<h2 style="text-align: center; color: #4facfe; font-size: 2.5rem; margin-bottom: 2rem;">📚 Picture Book Reading</h2>', unsafe_allow_html=True)
-    
-    st.info("🚧 Picture Book Reading 课程正在开发中，敬请期待！")
-    
-    # 预览功能
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        st.markdown("""
-        <div style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); 
-                    padding: 2rem; border-radius: 20px; text-align: center; color: #333;">
-            <h4>🎨 经典绘本</h4>
-            <p>精选优质绘本故事</p>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    with col2:
-        st.markdown("""
-        <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); 
-                    padding: 2rem; border-radius: 20px; text-align: center; color: white;">
-            <h4>🎭 互动阅读</h4>
-            <p>声音与画面结合</p>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    with col3:
-        st.markdown("""
-        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-                    padding: 2rem; border-radius: 20px; text-align: center; color: white;">
-            <h4>🤔 理解练习</h4>
-            <p>培养阅读理解能力</p>
         </div>
         """, unsafe_allow_html=True)
 
@@ -353,29 +865,68 @@ def show_letter_detail_page():
 
 # 主程序逻辑
 def main():
-    # 主标题和副标题
-    st.markdown('<h1 class="main-title">🌟 LolaLand</h1>', unsafe_allow_html=True)
-    st.markdown('<div class="subtitle">专业英语学习平台 - 让孩子爱上英语</div>', unsafe_allow_html=True)
+    # 初始化权限系统
+    initialize_permissions()
+    
+    # 如果未登录，显示登录页面
+    if not st.session_state.logged_in:
+        show_login_page()
+        return
+    
+    # 显示用户侧边栏
+    show_user_sidebar()
+    
+    # 可爱的主标题和副标题
+    st.markdown('<h1 class="main-title">🌟 LolaLand 🌈</h1>', unsafe_allow_html=True)
+    st.markdown('<div class="subtitle">💫 可爱的英语学习乐园 - 让小朋友爱上英语 🎀</div>', unsafe_allow_html=True)
+    
+    # 可爱的欢迎用户
+    if st.session_state.user_data:
+        user_name = st.session_state.user_data['name']
+        st.markdown(f'''
+        <div style="text-align: center; margin: 1.5rem 0;">
+            <div style="background: linear-gradient(135deg, #ffeef8 0%, #f0e6ff 100%); 
+                        padding: 1.5rem; border-radius: 20px; border: 2px solid #ffb3d9; display: inline-block;">
+                <span style="color: #ff6b9d; font-size: 1.5rem; font-weight: bold;">
+                    🎉 欢迎回来，{user_name}小可爱！🎉
+                </span>
+                <div style="margin-top: 0.5rem; font-size: 1.2rem;">
+                    🌸 ✨ 🦄 💖 🌟 ✨ 🌸
+                </div>
+            </div>
+        </div>
+        ''', unsafe_allow_html=True)
+    
+    # 显示权限提示
+    unlocked_count = sum(1 for perm in st.session_state.user_permissions.values() if perm)
+    total_courses = len(COURSES)
+    
+    if unlocked_count == 0:
+        st.warning("🔒 您当前没有任何已购买的课程。请联系管理员获取课程权限。")
+    elif unlocked_count < total_courses:
+        st.info(f"📚 您已解锁 {unlocked_count}/{total_courses} 套课程。查看左侧边栏了解详情。")
+    else:
+        st.success(f"🎉 恭喜！您已解锁全部 {total_courses} 套课程！")
     
     # 创建标签页
     tab1, tab2, tab3, tab4 = st.tabs([
         "🔤 Phonics", 
-        "📖 HMH Into Reading", 
-        "✍️ Grammar & Writing", 
-        "📚 Picture Book Reading"
+        "⚡ Power up", 
+        "🚀 Journeys", 
+        "✍️ Grammar & Writing"
     ])
     
     with tab1:
         show_phonics_tab()
     
     with tab2:
-        show_hmh_tab()
+        show_power_up_tab()
     
     with tab3:
-        show_grammar_tab()
+        show_journeys_tab()
     
     with tab4:
-        show_picture_book_tab()
+        show_grammar_writing_tab()
     
     # 版权信息
     st.markdown(
