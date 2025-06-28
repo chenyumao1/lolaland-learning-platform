@@ -170,7 +170,7 @@ def show_login_page():
                     text-align: center;
                     margin: 2rem 0;">
             <h3 style="color: #ff6b9d; margin-bottom: 1rem; font-size: 1.8rem;">
-                🔐 欢迎小可爱登录 🔐
+                🔐 欢迎登录 
             </h3>
             <div style="font-size: 1.2rem; margin-bottom: 2rem;">
                 🌈 🎨 🎪 🎭 🎪 🎨 🌈
@@ -195,7 +195,7 @@ def show_login_page():
                     st.session_state.user_data = user_data
                     st.session_state.logged_in = True
                     st.balloons()  # 添加气球动画
-                    st.success(f"🎉 欢迎回来，{user_data['name']}小可爱！🎉")
+                    st.success(f"🎉 欢迎回来，{user_data['name']}！🎉")
                     st.rerun()
                 else:
                     st.error("😅 用户名或密码不对哦！请再试试看 💕")
@@ -581,6 +581,10 @@ if 'selected_letter' not in st.session_state:
     st.session_state.selected_letter = None
 if 'phonics_page' not in st.session_state:
     st.session_state.phonics_page = 'levels'
+if 'selected_level' not in st.session_state:
+    st.session_state.selected_level = 1
+if 'selected_lesson' not in st.session_state:
+    st.session_state.selected_lesson = None
 
 def show_phonics_tab():
     """显示Phonics课程标签页"""
@@ -588,10 +592,13 @@ def show_phonics_tab():
     if not check_course_permission("phonics"):
         show_locked_tab_content("phonics")
         return
+    
     if st.session_state.phonics_page == 'letter_detail':
         show_letter_detail_page()
+    elif st.session_state.phonics_page == 'lesson_detail':
+        show_lesson_detail_page()
     else:
-        # 显示Level选择和Level 1字母学习
+        # 显示Level选择和课程内容
         st.markdown('<h2 style="text-align: center; color: #4facfe; font-size: 2.5rem; margin-bottom: 2rem;">🔤 Phonics 课程</h2>', unsafe_allow_html=True)
         
         # Level选择区域
@@ -601,12 +608,15 @@ def show_phonics_tab():
         
         with col1:
             if st.button("Level 1", key="phonics_level1", use_container_width=True):
+                st.session_state.selected_level = 1
                 st.success("Level 1 已选中 - 请向下滚动学习26个字母")
             st.markdown('<div style="text-align: center; margin-top: 0.5rem; color: #666; font-size: 0.9rem;">26个字母</div>', unsafe_allow_html=True)
         
         with col2:
-            st.button("Level 2", key="phonics_level2", use_container_width=True, disabled=True)
-            st.markdown('<div style="text-align: center; margin-top: 0.5rem; color: #999; font-size: 0.9rem;">即将开放</div>', unsafe_allow_html=True)
+            if st.button("Level 2", key="phonics_level2", use_container_width=True):
+                st.session_state.selected_level = 2
+                st.success("Level 2 已选中 - 请向下滚动学习20个课程")
+            st.markdown('<div style="text-align: center; margin-top: 0.5rem; color: #666; font-size: 0.9rem;">20个课程</div>', unsafe_allow_html=True)
         
         with col3:
             st.button("Level 3", key="phonics_level3", use_container_width=True, disabled=True)
@@ -622,23 +632,180 @@ def show_phonics_tab():
         
         st.markdown("---")
         
-        # Level 1 字母学习区域
-        st.markdown('<h3 style="color: #667eea; margin-bottom: 2rem;">🌟 Level 1 - 字母学习</h3>', unsafe_allow_html=True)
-        
-        # 创建字母网格
-        letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-        
-        # 每行显示6个字母
-        rows = [letters[i:i+6] for i in range(0, len(letters), 6)]
-        
-        for row in rows:
-            cols = st.columns(6)
-            for i, letter in enumerate(row):
-                with cols[i]:
-                    if st.button(f"🔤 {letter}", key=f"letter_{letter}", use_container_width=True):
-                        st.session_state.selected_letter = letter
-                        st.session_state.phonics_page = 'letter_detail'
-                        st.rerun()
+        # 根据选择的Level显示不同内容
+        if st.session_state.selected_level == 1:
+            show_level1_content()
+        elif st.session_state.selected_level == 2:
+            show_level2_content()
+
+def show_level1_content():
+    """显示Level 1内容 - 26个字母"""
+    st.markdown('<h3 style="color: #667eea; margin-bottom: 2rem;">🌟 Level 1 - 字母学习</h3>', unsafe_allow_html=True)
+    
+    # 创建字母网格
+    letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    
+    # 每行显示6个字母
+    rows = [letters[i:i+6] for i in range(0, len(letters), 6)]
+    
+    for row in rows:
+        cols = st.columns(6)
+        for i, letter in enumerate(row):
+            with cols[i]:
+                if st.button(f"🔤 {letter}", key=f"letter_{letter}", use_container_width=True):
+                    st.session_state.selected_letter = letter
+                    st.session_state.phonics_page = 'letter_detail'
+                    st.rerun()
+
+def show_level2_content():
+    """显示Level 2内容 - 20个课程"""
+    st.markdown('<h3 style="color: #667eea; margin-bottom: 2rem;">🎵 Level 2 - 音频课程</h3>', unsafe_allow_html=True)
+    
+    # 创建20个课程的网格布局
+    lessons = [
+        "Lesson 1: 单音节发音", "Lesson 2: 双音节发音", "Lesson 3: 元音组合", "Lesson 4: 辅音组合",
+        "Lesson 5: 长元音练习", "Lesson 6: 短元音练习", "Lesson 7: 音节分割", "Lesson 8: 重音练习",
+        "Lesson 9: 语音节奏", "Lesson 10: 连读技巧", "Lesson 11: 弱读练习", "Lesson 12: 语调变化",
+        "Lesson 13: 句子重音", "Lesson 14: 问句语调", "Lesson 15: 感叹语调", "Lesson 16: 对话练习",
+        "Lesson 17: 故事朗读", "Lesson 18: 诗歌韵律", "Lesson 19: 绕口令", "Lesson 20: 综合练习"
+    ]
+    
+    # 每行显示4个课程
+    rows = [lessons[i:i+4] for i in range(0, len(lessons), 4)]
+    
+    for row in rows:
+        cols = st.columns(4)
+        for i, lesson in enumerate(row):
+            with cols[i]:
+                lesson_num = int(lesson.split(":")[0].split(" ")[1])
+                lesson_title = lesson.split(": ")[1]
+                
+                if st.button(f"🎵 {lesson_title}", key=f"lesson_{lesson_num}", use_container_width=True):
+                    st.session_state.selected_lesson = lesson_num
+                    st.session_state.phonics_page = 'lesson_detail'
+                    st.rerun()
+                
+                st.markdown(f'<div style="text-align: center; margin-top: 0.5rem; color: #666; font-size: 0.9rem;">课程 {lesson_num}</div>', unsafe_allow_html=True)
+
+def show_letter_detail_page():
+    """显示单个字母详情页面"""
+    letter = st.session_state.selected_letter
+    
+    if st.button("← 返回字母列表", key="back_level1"):
+        st.session_state.phonics_page = 'levels'
+        st.rerun()
+    
+    st.markdown(f'<h1 class="letter-title">{letter}</h1>', unsafe_allow_html=True)
+    
+    # 创建视频容器
+    st.markdown('<div class="video-container">', unsafe_allow_html=True)
+    
+    # 检查视频文件是否存在
+    video_path = f"videos/{letter.lower()}.mp4"
+    
+    if os.path.exists(video_path):
+        st.video(video_path)
+    else:
+        st.info(f"请将字母 {letter} 的视频文件放入 `videos/{letter.lower()}.mp4`")
+    
+    st.markdown('</div>', unsafe_allow_html=True)
+    
+    # 显示字母相关信息
+    st.markdown(f"""
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                padding: 2rem; border-radius: 20px; margin-top: 2rem;">
+        <h3 style="color: white; text-align: center; margin-bottom: 1rem;">
+            学习字母 {letter}
+        </h3>
+        <p style="color: rgba(255,255,255,0.9); text-align: center; font-size: 1.2rem;">
+            观看视频，跟着老师一起学习字母 {letter} 的发音和写法！
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
+def show_lesson_detail_page():
+    """显示Level 2课程详情页面"""
+    lesson_num = st.session_state.selected_lesson
+    
+    if st.button("← 返回课程列表", key="back_level2"):
+        st.session_state.phonics_page = 'levels'
+        st.rerun()
+    
+    st.markdown(f'<h1 style="text-align: center; color: #4facfe; font-size: 3rem; margin-bottom: 2rem;">🎵 课程 {lesson_num}</h1>', unsafe_allow_html=True)
+    
+    # 创建视频容器
+    st.markdown('<div class="video-container">', unsafe_allow_html=True)
+    
+    # 检查音频/视频文件是否存在
+    # 尝试多种格式和命名方式
+    possible_files = [
+        f"videos/lesson{lesson_num}.mp4",
+        f"videos/lesson_{lesson_num}.mp4", 
+        f"videos/level2_lesson{lesson_num}.mp4",
+        f"videos/level2_lesson_{lesson_num}.mp4",
+        f"videos/l2_{lesson_num}.mp4",
+        f"videos/lesson{lesson_num}.mp3",
+        f"videos/lesson_{lesson_num}.mp3"
+    ]
+    
+    video_found = False
+    for video_path in possible_files:
+        if os.path.exists(video_path):
+            if video_path.endswith('.mp3'):
+                st.audio(video_path)
+            else:
+                st.video(video_path)
+            video_found = True
+            break
+    
+    if not video_found:
+        st.info(f"""
+        请将课程 {lesson_num} 的音频/视频文件放入 videos/ 目录，支持以下命名格式：
+        - `lesson{lesson_num}.mp4` 或 `lesson{lesson_num}.mp3`
+        - `lesson_{lesson_num}.mp4` 或 `lesson_{lesson_num}.mp3`
+        - `level2_lesson{lesson_num}.mp4`
+        - `l2_{lesson_num}.mp4`
+        """)
+    
+    st.markdown('</div>', unsafe_allow_html=True)
+    
+    # 显示课程相关信息
+    lesson_descriptions = {
+        1: "学习基本的单音节发音规则",
+        2: "掌握双音节词汇的发音技巧",
+        3: "练习元音字母组合的发音",
+        4: "学习辅音字母组合的发音",
+        5: "掌握长元音的正确发音",
+        6: "练习短元音的发音区别",
+        7: "学习如何正确分割音节",
+        8: "掌握词汇重音的位置",
+        9: "理解英语的语音节奏",
+        10: "学习单词间的连读技巧",
+        11: "练习功能词的弱读",
+        12: "掌握不同语调的变化",
+        13: "学习句子中的重音规律",
+        14: "掌握疑问句的语调",
+        15: "练习感叹句的语调",
+        16: "进行实际对话练习",
+        17: "练习故事的朗读技巧",
+        18: "学习诗歌的韵律节拍",
+        19: "通过绕口令练习发音",
+        20: "综合运用所学发音技巧"
+    }
+    
+    description = lesson_descriptions.get(lesson_num, "音频发音练习课程")
+    
+    st.markdown(f"""
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                padding: 2rem; border-radius: 20px; margin-top: 2rem;">
+        <h3 style="color: white; text-align: center; margin-bottom: 1rem;">
+            课程 {lesson_num} 学习目标
+        </h3>
+        <p style="color: rgba(255,255,255,0.9); text-align: center; font-size: 1.2rem;">
+            {description}
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
 def show_power_up_tab():
     """显示Power up课程标签页"""
@@ -796,7 +963,7 @@ def show_grammar_writing_tab():
                 lesson_num = lesson.split(":")[0].split(" ")[1]
                 lesson_title = lesson.split(": ")[1]
                 
-                if st.button(f"📝 {lesson_title}", key=f"lesson_{lesson_num}", use_container_width=True):
+                if st.button(f"📝 {lesson_title}", key=f"grammar_lesson_{lesson_num}", use_container_width=True):
                     st.info(f"正在进入 {lesson}")
                 
                 st.markdown(f'<div style="text-align: center; margin-top: 0.5rem; color: #666; font-size: 0.9rem;">{lesson.split(":")[0]}</div>', unsafe_allow_html=True)
@@ -835,60 +1002,6 @@ def show_grammar_writing_tab():
         </div>
         """, unsafe_allow_html=True)
 
-def show_letter_detail_page():
-    """显示单个字母详情页面"""
-    letter = st.session_state.selected_letter
-    
-    if st.button("← 返回字母列表", key="back_level1"):
-        st.session_state.phonics_page = 'levels'
-        st.rerun()
-    
-    st.markdown(f'<h1 class="letter-title">{letter}</h1>', unsafe_allow_html=True)
-    
-    # 创建视频容器
-    st.markdown('<div class="video-container">', unsafe_allow_html=True)
-    
-    # 检查视频文件是否存在
-    video_path = f"videos/{letter.lower()}.mp4"
-    
-    if os.path.exists(video_path):
-        st.video(video_path)
-    else:
-        st.info(f"请将字母 {letter} 的视频文件上传到 `videos/{letter.lower()}.mp4`")
-        
-        # 提供文件上传功能
-        uploaded_file = st.file_uploader(
-            f"上传字母 {letter} 的视频",
-            type=['mp4', 'mov', 'avi'],
-            key=f"upload_{letter}"
-        )
-        
-        if uploaded_file is not None:
-            # 创建videos目录（如果不存在）
-            os.makedirs("videos", exist_ok=True)
-            
-            # 保存上传的文件
-            with open(video_path, "wb") as f:
-                f.write(uploaded_file.getbuffer())
-            
-            st.success(f"视频已成功上传！")
-            st.rerun()
-    
-    st.markdown('</div>', unsafe_allow_html=True)
-    
-    # 显示字母相关信息
-    st.markdown(f"""
-    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-                padding: 2rem; border-radius: 20px; margin-top: 2rem;">
-        <h3 style="color: white; text-align: center; margin-bottom: 1rem;">
-            学习字母 {letter}
-        </h3>
-        <p style="color: rgba(255,255,255,0.9); text-align: center; font-size: 1.2rem;">
-            观看视频，跟着老师一起学习字母 {letter} 的发音和写法！
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
-
 # 主程序逻辑
 def main():
     # 初始化权限系统
@@ -914,7 +1027,7 @@ def main():
             <div style="background: linear-gradient(135deg, #ffeef8 0%, #f0e6ff 100%); 
                         padding: 1.5rem; border-radius: 20px; border: 2px solid #ffb3d9; display: inline-block;">
                 <span style="color: #ff6b9d; font-size: 1.5rem; font-weight: bold;">
-                    🎉 欢迎回来，{user_name}小可爱！🎉
+                    🎉 欢迎回来，{user_name}！🎉
                 </span>
                 <div style="margin-top: 0.5rem; font-size: 1.2rem;">
                     🌸 ✨ 🦄 💖 🌟 ✨ 🌸
