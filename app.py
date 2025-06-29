@@ -1028,12 +1028,20 @@ def show_power_up_g1_content():
     audio_folder = "videos/PowerUp/Grade1"
     audio_files = []
     
+    # 调试信息
+    st.write(f"🔍 调试信息：正在检查文件夹 {audio_folder}")
+    st.write(f"📁 文件夹是否存在：{os.path.exists(audio_folder)}")
+    
     if os.path.exists(audio_folder):
-        for file in os.listdir(audio_folder):
+        all_files = os.listdir(audio_folder)
+        st.write(f"📂 文件夹内容：{all_files}")
+        
+        for file in all_files:
             if file.endswith('.wav') or file.endswith('.mp3'):
                 audio_files.append(file)
     
     audio_files.sort()  # 排序文件名
+    st.write(f"🎵 找到的音频文件：{audio_files}")
     
     if not audio_files:
         st.info("暂无G1课程音频文件")
@@ -1077,12 +1085,20 @@ def show_power_up_g2_content():
     audio_folder = "videos/PowerUp/Grade2"
     audio_files = []
     
+    # 调试信息
+    st.write(f"🔍 调试信息：正在检查文件夹 {audio_folder}")
+    st.write(f"📁 文件夹是否存在：{os.path.exists(audio_folder)}")
+    
     if os.path.exists(audio_folder):
-        for file in os.listdir(audio_folder):
+        all_files = os.listdir(audio_folder)
+        st.write(f"📂 文件夹内容：{all_files}")
+        
+        for file in all_files:
             if file.endswith('.wav') or file.endswith('.mp3'):
                 audio_files.append(file)
     
     audio_files.sort()  # 排序文件名
+    st.write(f"🎵 找到的音频文件：{audio_files}")
     
     if not audio_files:
         st.info("暂无G2课程音频文件")
