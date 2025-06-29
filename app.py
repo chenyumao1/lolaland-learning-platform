@@ -1030,7 +1030,7 @@ def show_power_up_g1_content():
     
     if os.path.exists(audio_folder):
         for file in os.listdir(audio_folder):
-            if file.endswith('.wav') or file.endswith('.mp3'):
+            if file.endswith('.mp3'):
                 audio_files.append(file)
     
     audio_files.sort()  # 排序文件名
@@ -1079,7 +1079,7 @@ def show_power_up_g2_content():
     
     if os.path.exists(audio_folder):
         for file in os.listdir(audio_folder):
-            if file.endswith('.wav') or file.endswith('.mp3'):
+            if file.endswith('.mp3'):
                 audio_files.append(file)
     
     audio_files.sort()  # 排序文件名
@@ -1147,7 +1147,7 @@ def show_power_up_lesson_detail_page():
     audio_path = f"videos/PowerUp/{grade_folder}/{lesson_file}"
     
     if os.path.exists(audio_path):
-        st.audio(audio_path)
+        st.audio(audio_path, format="audio/mpeg")
     else:
         st.error(f"音频文件未找到: {audio_path}")
     
