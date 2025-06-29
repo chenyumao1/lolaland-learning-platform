@@ -839,13 +839,13 @@ def show_power_up_tab():
         with col2:
             if st.button("G1", key="power_up_g1", use_container_width=True):
                 st.session_state.selected_power_up_grade = "G1"
-                st.success("G1 一年级课程已选中 - 请向下滚动查看课程")
+                st.rerun()
             st.markdown('<div style="text-align: center; margin-top: 0.5rem; color: #666; font-size: 0.9rem;">一年级</div>', unsafe_allow_html=True)
         
         with col3:
             if st.button("G2", key="power_up_g2", use_container_width=True):
                 st.session_state.selected_power_up_grade = "G2"
-                st.success("G2 二年级课程已选中 - 请向下滚动查看课程")
+                st.rerun()
             st.markdown('<div style="text-align: center; margin-top: 0.5rem; color: #666; font-size: 0.9rem;">二年级</div>', unsafe_allow_html=True)
         
         st.markdown("---")
