@@ -585,6 +585,12 @@ if 'selected_level' not in st.session_state:
     st.session_state.selected_level = 1
 if 'selected_lesson' not in st.session_state:
     st.session_state.selected_lesson = None
+if 'power_up_page' not in st.session_state:
+    st.session_state.power_up_page = 'levels'
+if 'selected_power_up_grade' not in st.session_state:
+    st.session_state.selected_power_up_grade = None
+if 'selected_power_up_lesson' not in st.session_state:
+    st.session_state.selected_power_up_lesson = None
 
 def show_phonics_tab():
     """显示Phonics课程标签页"""
@@ -814,60 +820,72 @@ def show_power_up_tab():
         show_locked_tab_content("power_up")
         return
     
-    st.markdown('<h2 style="text-align: center; color: #4facfe; font-size: 2.5rem; margin-bottom: 2rem;">⚡ Power up</h2>', unsafe_allow_html=True)
-    
-    # Level选择区域
-    st.markdown('<h3 style="color: #667eea; margin-bottom: 1rem;">📚 选择学习等级</h3>', unsafe_allow_html=True)
-    
-    col1, col2, col3 = st.columns(3)
-    
-    with col1:
-        if st.button("Pre", key="power_up_pre", use_container_width=True):
-            st.info("正在进入 Pre 预备级课程")
-        st.markdown('<div style="text-align: center; margin-top: 0.5rem; color: #666; font-size: 0.9rem;">预备级</div>', unsafe_allow_html=True)
-    
-    with col2:
-        if st.button("G1", key="power_up_g1", use_container_width=True):
-            st.info("正在进入 G1 一年级课程")
-        st.markdown('<div style="text-align: center; margin-top: 0.5rem; color: #666; font-size: 0.9rem;">一年级</div>', unsafe_allow_html=True)
-    
-    with col3:
-        if st.button("G2", key="power_up_g2", use_container_width=True):
-            st.info("正在进入 G2 二年级课程")
-        st.markdown('<div style="text-align: center; margin-top: 0.5rem; color: #666; font-size: 0.9rem;">二年级</div>', unsafe_allow_html=True)
-    
-    st.markdown("---")
-    
-    # 课程特色展示
-    st.markdown('<h3 style="color: #667eea; margin-bottom: 2rem;">🌟 课程特色</h3>', unsafe_allow_html=True)
-    
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        st.markdown("""
-        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-                    padding: 2rem; border-radius: 20px; text-align: center; color: white;">
-            <h4>💪 能力提升</h4>
-            <p>全面提升英语综合能力</p>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    with col2:
-        st.markdown("""
-        <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); 
-                    padding: 2rem; border-radius: 20px; text-align: center; color: white;">
-            <h4>🎯 分级教学</h4>
-            <p>针对不同年龄段设计</p>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    with col3:
-        st.markdown("""
-        <div style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); 
-                    padding: 2rem; border-radius: 20px; text-align: center; color: #333;">
-            <h4>⚡ 快速进步</h4>
-            <p>科学的学习进度安排</p>
-        </div>
-        """, unsafe_allow_html=True)
+    if st.session_state.power_up_page == 'lesson_detail':
+        show_power_up_lesson_detail_page()
+    else:
+        # 显示课程主页
+        st.markdown('<h2 style="text-align: center; color: #4facfe; font-size: 2.5rem; margin-bottom: 2rem;">⚡ Power up</h2>', unsafe_allow_html=True)
+        
+        # Level选择区域
+        st.markdown('<h3 style="color: #667eea; margin-bottom: 1rem;">📚 选择学习等级</h3>', unsafe_allow_html=True)
+        
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            if st.button("Pre", key="power_up_pre", use_container_width=True):
+                st.info("Pre 预备级课程即将开放")
+            st.markdown('<div style="text-align: center; margin-top: 0.5rem; color: #666; font-size: 0.9rem;">预备级</div>', unsafe_allow_html=True)
+        
+        with col2:
+            if st.button("G1", key="power_up_g1", use_container_width=True):
+                st.session_state.selected_power_up_grade = "G1"
+                st.success("G1 一年级课程已选中 - 请向下滚动查看课程")
+            st.markdown('<div style="text-align: center; margin-top: 0.5rem; color: #666; font-size: 0.9rem;">一年级</div>', unsafe_allow_html=True)
+        
+        with col3:
+            if st.button("G2", key="power_up_g2", use_container_width=True):
+                st.session_state.selected_power_up_grade = "G2"
+                st.success("G2 二年级课程已选中 - 请向下滚动查看课程")
+            st.markdown('<div style="text-align: center; margin-top: 0.5rem; color: #666; font-size: 0.9rem;">二年级</div>', unsafe_allow_html=True)
+        
+        st.markdown("---")
+        
+        # 根据选择的年级显示课程内容
+        if st.session_state.selected_power_up_grade == "G1":
+            show_power_up_g1_content()
+        elif st.session_state.selected_power_up_grade == "G2":
+            show_power_up_g2_content()
+        else:
+            # 课程特色展示
+            st.markdown('<h3 style="color: #667eea; margin-bottom: 2rem;">🌟 课程特色</h3>', unsafe_allow_html=True)
+            
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.markdown("""
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                            padding: 2rem; border-radius: 20px; text-align: center; color: white;">
+                    <h4>💪 能力提升</h4>
+                    <p>全面提升英语综合能力</p>
+                </div>
+                """, unsafe_allow_html=True)
+            
+            with col2:
+                st.markdown("""
+                <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); 
+                            padding: 2rem; border-radius: 20px; text-align: center; color: white;">
+                    <h4>🎯 分级教学</h4>
+                    <p>针对不同年龄段设计</p>
+                </div>
+                """, unsafe_allow_html=True)
+            
+            with col3:
+                st.markdown("""
+                <div style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); 
+                            padding: 2rem; border-radius: 20px; text-align: center; color: #333;">
+                    <h4>⚡ 快速进步</h4>
+                    <p>科学的学习进度安排</p>
+                </div>
+                """, unsafe_allow_html=True)
 
 def show_journeys_tab():
     """显示Journeys课程标签页"""
@@ -1001,6 +1019,167 @@ def show_grammar_writing_tab():
             </ul>
         </div>
         """, unsafe_allow_html=True)
+
+def show_power_up_g1_content():
+    """显示Power up G1课程内容"""
+    st.markdown('<h3 style="color: #667eea; margin-bottom: 2rem;">🎵 G1 一年级课程</h3>', unsafe_allow_html=True)
+    
+    # 从文件夹读取音频文件
+    audio_folder = "videos/Power up/Grade 1"
+    audio_files = []
+    
+    if os.path.exists(audio_folder):
+        for file in os.listdir(audio_folder):
+            if file.endswith('.wav') or file.endswith('.mp3'):
+                audio_files.append(file)
+    
+    audio_files.sort()  # 排序文件名
+    
+    if not audio_files:
+        st.info("暂无G1课程音频文件")
+        return
+    
+    # 显示课程描述
+    st.markdown("""
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                padding: 2rem; border-radius: 20px; text-align: center; color: white; margin-bottom: 2rem;">
+        <h4>🌟 G1 一年级课程</h4>
+        <p>适合一年级学生的英语综合能力提升课程</p>
+        <p>共有 {0} 个音频课程</p>
+    </div>
+    """.format(len(audio_files)), unsafe_allow_html=True)
+    
+    # 创建音频课程网格
+    cols_per_row = 3
+    rows = [audio_files[i:i+cols_per_row] for i in range(0, len(audio_files), cols_per_row)]
+    
+    for row_index, row in enumerate(rows):
+        cols = st.columns(cols_per_row)
+        for col_index, audio_file in enumerate(row):
+            with cols[col_index]:
+                # 从文件名提取课程信息
+                lesson_name = audio_file.replace('.wav', '').replace('.mp3', '')
+                lesson_display = lesson_name.replace('PU1-U1-', 'Unit 1 - Lesson ')
+                
+                if st.button(f"🎵 {lesson_display}", key=f"g1_{audio_file}", use_container_width=True):
+                    st.session_state.selected_power_up_lesson = audio_file
+                    st.session_state.selected_power_up_grade = "G1"
+                    st.session_state.power_up_page = 'lesson_detail'
+                    st.rerun()
+                
+                st.markdown(f'<div style="text-align: center; margin-top: 0.5rem; color: #666; font-size: 0.9rem;">{lesson_name}</div>', unsafe_allow_html=True)
+
+def show_power_up_g2_content():
+    """显示Power up G2课程内容"""
+    st.markdown('<h3 style="color: #667eea; margin-bottom: 2rem;">🎵 G2 二年级课程</h3>', unsafe_allow_html=True)
+    
+    # 从文件夹读取音频文件
+    audio_folder = "videos/Power up/Grade 2"
+    audio_files = []
+    
+    if os.path.exists(audio_folder):
+        for file in os.listdir(audio_folder):
+            if file.endswith('.wav') or file.endswith('.mp3'):
+                audio_files.append(file)
+    
+    audio_files.sort()  # 排序文件名
+    
+    if not audio_files:
+        st.info("暂无G2课程音频文件")
+        return
+    
+    # 显示课程描述
+    st.markdown("""
+    <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); 
+                padding: 2rem; border-radius: 20px; text-align: center; color: white; margin-bottom: 2rem;">
+        <h4>🌟 G2 二年级课程</h4>
+        <p>适合二年级学生的英语综合能力提升课程</p>
+        <p>共有 {0} 个音频课程</p>
+    </div>
+    """.format(len(audio_files)), unsafe_allow_html=True)
+    
+    # 创建音频课程网格
+    cols_per_row = 3
+    rows = [audio_files[i:i+cols_per_row] for i in range(0, len(audio_files), cols_per_row)]
+    
+    for row_index, row in enumerate(rows):
+        cols = st.columns(cols_per_row)
+        for col_index, audio_file in enumerate(row):
+            with cols[col_index]:
+                # 从文件名提取课程信息
+                lesson_name = audio_file.replace('.wav', '').replace('.mp3', '')
+                lesson_display = lesson_name.replace('PU1-U2-', 'Unit 2 - Lesson ')
+                
+                if st.button(f"🎵 {lesson_display}", key=f"g2_{audio_file}", use_container_width=True):
+                    st.session_state.selected_power_up_lesson = audio_file
+                    st.session_state.selected_power_up_grade = "G2"
+                    st.session_state.power_up_page = 'lesson_detail'
+                    st.rerun()
+                
+                st.markdown(f'<div style="text-align: center; margin-top: 0.5rem; color: #666; font-size: 0.9rem;">{lesson_name}</div>', unsafe_allow_html=True)
+
+def show_power_up_lesson_detail_page():
+    """显示Power up课程详情页面"""
+    grade = st.session_state.selected_power_up_grade
+    lesson_file = st.session_state.selected_power_up_lesson
+    
+    if st.button("← 返回课程列表", key="back_power_up"):
+        st.session_state.power_up_page = 'levels'
+        st.rerun()
+    
+    # 从文件名提取课程信息
+    lesson_name = lesson_file.replace('.wav', '').replace('.mp3', '')
+    if grade == "G1":
+        lesson_display = lesson_name.replace('PU1-U1-', 'Unit 1 - Lesson ')
+        grade_name = "一年级"
+        grade_folder = "Grade 1"
+    else:
+        lesson_display = lesson_name.replace('PU1-U2-', 'Unit 2 - Lesson ')
+        grade_name = "二年级"
+        grade_folder = "Grade 2"
+    
+    st.markdown(f'<h1 style="text-align: center; color: #4facfe; font-size: 3rem; margin-bottom: 2rem;">⚡ Power up {grade} - {lesson_display}</h1>', unsafe_allow_html=True)
+    
+    # 创建音频容器
+    st.markdown('<div class="video-container">', unsafe_allow_html=True)
+    
+    # 音频文件路径
+    audio_path = f"videos/Power up/{grade_folder}/{lesson_file}"
+    
+    if os.path.exists(audio_path):
+        st.audio(audio_path)
+    else:
+        st.error(f"音频文件未找到: {audio_path}")
+    
+    st.markdown('</div>', unsafe_allow_html=True)
+    
+    # 显示课程相关信息
+    lesson_descriptions = {
+        "PU1-U1-L1": "基础英语听力训练 - 字母发音和简单单词",
+        "PU1-U1-L2": "词汇扩展练习 - 常用生活用语和表达",
+        "PU1-U1-L3": "语音语调练习 - 句子重音和语调变化",
+        "PU1-U2-L1": "进阶听力理解 - 短句和对话练习",
+        "PU1-U2-L2": "语法基础应用 - 简单句型和时态练习"
+    }
+    
+    description = lesson_descriptions.get(lesson_name, f"Power up {grade_name}英语综合能力提升课程")
+    
+    st.markdown(f"""
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                padding: 2rem; border-radius: 20px; margin-top: 2rem;">
+        <h3 style="color: white; text-align: center; margin-bottom: 1rem;">
+            {lesson_display} 学习目标
+        </h3>
+        <p style="color: rgba(255,255,255,0.9); text-align: center; font-size: 1.2rem;">
+            {description}
+        </p>
+        <div style="text-align: center; margin-top: 1rem;">
+            <span style="background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 15px; color: white;">
+                🎧 请佩戴耳机获得最佳学习体验
+            </span>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
 # 主程序逻辑
 def main():
