@@ -148,8 +148,8 @@ def show_login_page():
             <div class="heart">✨</div>
             <div class="heart">🦄</div>
         </div>
-        <h1 class="cute-title">🌟 LolaLand 🌈</h1>
-        <p class="cute-subtitle">💫 可爱的英语学习乐园 💫</p>
+        <h1 class="cute-title">🌟 Lolaland 🌈</h1>
+        <p class="cute-subtitle">💫 英语学习乐园 💫</p>
         <div style="font-size: 1.5rem; margin-top: 1rem;">
             🎀 🌸 🦋 🌺 🎈 🌙 ⭐ 🌟
         </div>
@@ -418,7 +418,7 @@ def show_locked_tab_content(course_key):
 
 # 页面配置
 st.set_page_config(
-    page_title="LolaLand - 英语学习平台",
+    page_title="Lolaland - 英语学习平台",
     page_icon="🌟",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -1045,7 +1045,7 @@ def show_power_up_g1_content():
                 padding: 2rem; border-radius: 20px; text-align: center; color: white; margin-bottom: 2rem;">
         <h4>🌟 G1 一年级课程</h4>
         <p>适合一年级学生的英语综合能力提升课程</p>
-        <p>共有 {0} 个音频课程</p>
+        <p>目前已有 {0} 个Unit，总共9个Unit（更多内容即将上线）</p>
     </div>
     """.format(len(audio_files)), unsafe_allow_html=True)
     
@@ -1059,7 +1059,14 @@ def show_power_up_g1_content():
             with cols[col_index]:
                 # 从文件名提取课程信息
                 lesson_name = audio_file.replace('.wav', '').replace('.mp3', '')
-                lesson_display = lesson_name.replace('PU1-U1-', 'Unit 1 - Lesson ')
+                if 'PU1-U1-L1' in lesson_name:
+                    lesson_display = 'Unit 1'
+                elif 'PU1-U1-L2' in lesson_name:
+                    lesson_display = 'Unit 2'
+                elif 'PU1-U1-L3' in lesson_name:
+                    lesson_display = 'Unit 3'
+                else:
+                    lesson_display = lesson_name.replace('PU1-U1-', 'Unit ')
                 
                 if st.button(f"🎵 {lesson_display}", key=f"g1_{audio_file}", use_container_width=True):
                     st.session_state.selected_power_up_lesson = audio_file
@@ -1108,7 +1115,12 @@ def show_power_up_g2_content():
             with cols[col_index]:
                 # 从文件名提取课程信息
                 lesson_name = audio_file.replace('.wav', '').replace('.mp3', '')
-                lesson_display = lesson_name.replace('PU1-U2-', 'Unit 2 - Lesson ')
+                if 'PU1-U2-L1' in lesson_name:
+                    lesson_display = 'Unit 1'
+                elif 'PU1-U2-L2' in lesson_name:
+                    lesson_display = 'Unit 2'
+                else:
+                    lesson_display = lesson_name.replace('PU1-U2-', 'Unit ')
                 
                 if st.button(f"🎵 {lesson_display}", key=f"g2_{audio_file}", use_container_width=True):
                     st.session_state.selected_power_up_lesson = audio_file
@@ -1130,11 +1142,23 @@ def show_power_up_lesson_detail_page():
     # 从文件名提取课程信息
     lesson_name = lesson_file.replace('.wav', '').replace('.mp3', '')
     if grade == "G1":
-        lesson_display = lesson_name.replace('PU1-U1-', 'Unit 1 - Lesson ')
+        if 'PU1-U1-L1' in lesson_name:
+            lesson_display = 'Unit 1'
+        elif 'PU1-U1-L2' in lesson_name:
+            lesson_display = 'Unit 2'
+        elif 'PU1-U1-L3' in lesson_name:
+            lesson_display = 'Unit 3'
+        else:
+            lesson_display = lesson_name.replace('PU1-U1-', 'Unit ')
         grade_name = "一年级"
         grade_folder = "Grade 1"
     else:
-        lesson_display = lesson_name.replace('PU1-U2-', 'Unit 2 - Lesson ')
+        if 'PU1-U2-L1' in lesson_name:
+            lesson_display = 'Unit 1'
+        elif 'PU1-U2-L2' in lesson_name:
+            lesson_display = 'Unit 2'
+        else:
+            lesson_display = lesson_name.replace('PU1-U2-', 'Unit ')
         grade_name = "二年级"
         grade_folder = "Grade 2"
     
@@ -1194,11 +1218,11 @@ def main():
     # 显示用户侧边栏
     show_user_sidebar()
     
-    # 可爱的主标题和副标题
-    st.markdown('<h1 class="main-title">🌟 LolaLand 🌈</h1>', unsafe_allow_html=True)
-    st.markdown('<div class="subtitle">💫 可爱的英语学习乐园 - 让小朋友爱上英语 🎀</div>', unsafe_allow_html=True)
+    # 主标题和副标题
+    st.markdown('<h1 class="main-title">🌟 Lolaland 🌈</h1>', unsafe_allow_html=True)
+    st.markdown('<div class="subtitle">💫 英语学习乐园 - 让小朋友爱上英语 🎀</div>', unsafe_allow_html=True)
     
-    # 可爱的欢迎用户
+    # 欢迎用户
     if st.session_state.user_data:
         user_name = st.session_state.user_data['name']
         st.markdown(f'''
@@ -1248,7 +1272,7 @@ def main():
     
     # 版权信息
     st.markdown(
-        '<div class="copyright">© 2024 LolaLand English Learning Platform. All rights reserved.</div>', 
+        '<div class="copyright">© 2024 Lolaland English Learning Platform. All rights reserved.</div>', 
         unsafe_allow_html=True
     )
 
