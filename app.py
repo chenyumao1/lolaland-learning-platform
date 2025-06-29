@@ -839,13 +839,13 @@ def show_power_up_tab():
         with col2:
             if st.button("G1", key="power_up_g1", use_container_width=True):
                 st.session_state.selected_power_up_grade = "G1"
-                st.rerun()
+                st.success("G1 一年级课程已选中 - 请向下滚动查看课程")
             st.markdown('<div style="text-align: center; margin-top: 0.5rem; color: #666; font-size: 0.9rem;">一年级</div>', unsafe_allow_html=True)
         
         with col3:
             if st.button("G2", key="power_up_g2", use_container_width=True):
                 st.session_state.selected_power_up_grade = "G2"
-                st.rerun()
+                st.success("G2 二年级课程已选中 - 请向下滚动查看课程")
             st.markdown('<div style="text-align: center; margin-top: 0.5rem; color: #666; font-size: 0.9rem;">二年级</div>', unsafe_allow_html=True)
         
         st.markdown("---")
@@ -1025,23 +1025,15 @@ def show_power_up_g1_content():
     st.markdown('<h3 style="color: #667eea; margin-bottom: 2rem;">🎵 G1 一年级课程</h3>', unsafe_allow_html=True)
     
     # 从文件夹读取音频文件
-    audio_folder = "videos/PowerUp/Grade1"
+    audio_folder = "videos/PowerUp/Grade 1"
     audio_files = []
     
-    # 调试信息
-    st.write(f"🔍 调试信息：正在检查文件夹 {audio_folder}")
-    st.write(f"📁 文件夹是否存在：{os.path.exists(audio_folder)}")
-    
     if os.path.exists(audio_folder):
-        all_files = os.listdir(audio_folder)
-        st.write(f"📂 文件夹内容：{all_files}")
-        
-        for file in all_files:
+        for file in os.listdir(audio_folder):
             if file.endswith('.wav') or file.endswith('.mp3'):
                 audio_files.append(file)
     
     audio_files.sort()  # 排序文件名
-    st.write(f"🎵 找到的音频文件：{audio_files}")
     
     if not audio_files:
         st.info("暂无G1课程音频文件")
@@ -1082,23 +1074,15 @@ def show_power_up_g2_content():
     st.markdown('<h3 style="color: #667eea; margin-bottom: 2rem;">🎵 G2 二年级课程</h3>', unsafe_allow_html=True)
     
     # 从文件夹读取音频文件
-    audio_folder = "videos/PowerUp/Grade2"
+    audio_folder = "videos/PowerUp/Grade 2"
     audio_files = []
     
-    # 调试信息
-    st.write(f"🔍 调试信息：正在检查文件夹 {audio_folder}")
-    st.write(f"📁 文件夹是否存在：{os.path.exists(audio_folder)}")
-    
     if os.path.exists(audio_folder):
-        all_files = os.listdir(audio_folder)
-        st.write(f"📂 文件夹内容：{all_files}")
-        
-        for file in all_files:
+        for file in os.listdir(audio_folder):
             if file.endswith('.wav') or file.endswith('.mp3'):
                 audio_files.append(file)
     
     audio_files.sort()  # 排序文件名
-    st.write(f"🎵 找到的音频文件：{audio_files}")
     
     if not audio_files:
         st.info("暂无G2课程音频文件")
@@ -1148,11 +1132,11 @@ def show_power_up_lesson_detail_page():
     if grade == "G1":
         lesson_display = lesson_name.replace('PU1-U1-', 'Unit 1 - Lesson ')
         grade_name = "一年级"
-        grade_folder = "Grade1"
+        grade_folder = "Grade 1"
     else:
         lesson_display = lesson_name.replace('PU1-U2-', 'Unit 2 - Lesson ')
         grade_name = "二年级"
-        grade_folder = "Grade2"
+        grade_folder = "Grade 2"
     
     st.markdown(f'<h1 style="text-align: center; color: #4facfe; font-size: 3rem; margin-bottom: 2rem;">⚡ Power up {grade} - {lesson_display}</h1>', unsafe_allow_html=True)
     
