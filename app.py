@@ -1025,7 +1025,7 @@ def show_power_up_g1_content():
     st.markdown('<h3 style="color: #667eea; margin-bottom: 2rem;">🎵 G1 一年级课程</h3>', unsafe_allow_html=True)
     
     # 从文件夹读取音频文件
-    audio_folder = "videos/Power up/Grade 1"
+    audio_folder = "videos/PowerUp/Grade1"
     audio_files = []
     
     if os.path.exists(audio_folder):
@@ -1074,7 +1074,7 @@ def show_power_up_g2_content():
     st.markdown('<h3 style="color: #667eea; margin-bottom: 2rem;">🎵 G2 二年级课程</h3>', unsafe_allow_html=True)
     
     # 从文件夹读取音频文件
-    audio_folder = "videos/Power up/Grade 2"
+    audio_folder = "videos/PowerUp/Grade2"
     audio_files = []
     
     if os.path.exists(audio_folder):
@@ -1132,11 +1132,11 @@ def show_power_up_lesson_detail_page():
     if grade == "G1":
         lesson_display = lesson_name.replace('PU1-U1-', 'Unit 1 - Lesson ')
         grade_name = "一年级"
-        grade_folder = "Grade 1"
+        grade_folder = "Grade1"
     else:
         lesson_display = lesson_name.replace('PU1-U2-', 'Unit 2 - Lesson ')
         grade_name = "二年级"
-        grade_folder = "Grade 2"
+        grade_folder = "Grade2"
     
     st.markdown(f'<h1 style="text-align: center; color: #4facfe; font-size: 3rem; margin-bottom: 2rem;">⚡ Power up {grade} - {lesson_display}</h1>', unsafe_allow_html=True)
     
@@ -1144,7 +1144,7 @@ def show_power_up_lesson_detail_page():
     st.markdown('<div class="video-container">', unsafe_allow_html=True)
     
     # 音频文件路径
-    audio_path = f"videos/Power up/{grade_folder}/{lesson_file}"
+    audio_path = f"videos/PowerUp/{grade_folder}/{lesson_file}"
     
     if os.path.exists(audio_path):
         st.audio(audio_path)
