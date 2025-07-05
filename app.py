@@ -1146,14 +1146,14 @@ def show_power_up_lesson_detail_page():
     # 从文件名提取课程信息
     lesson_name = lesson_file.replace('.wav', '').replace('.mp3', '')
     if grade == "G1":
-        if 'PU1-U1-L1' in lesson_name:
-            lesson_display = 'Unit 1'
-        elif 'PU1-U1-L2' in lesson_name:
-            lesson_display = 'Unit 2'
-        elif 'PU1-U1-L3' in lesson_name:
-            lesson_display = 'Unit 3'
+        if 'L1' in lesson_name:
+            lesson_display = 'Lesson 1'
+        elif 'L2' in lesson_name:
+            lesson_display = 'Lesson 2'
+        elif 'L3' in lesson_name:
+            lesson_display = 'Lesson 3'
         else:
-            lesson_display = lesson_name.replace('PU1-U1-', 'Unit ')
+            lesson_display = lesson_name
         grade_name = "一年级"
         grade_folder = "Grade 1 "
     else:
@@ -1197,11 +1197,28 @@ def show_power_up_lesson_detail_page():
     
     # 显示课程相关信息
     lesson_descriptions = {
+        # Unit 1 课程
         "PU1-U1-L1": "基础英语听力训练 - 字母发音和简单单词",
         "PU1-U1-L2": "词汇扩展练习 - 常用生活用语和表达",
         "PU1-U1-L3": "语音语调练习 - 句子重音和语调变化",
+        # Unit 2 课程
         "PU1-U2-L1": "进阶听力理解 - 短句和对话练习",
-        "PU1-U2-L2": "语法基础应用 - 简单句型和时态练习"
+        "PU1-U2-L2": "语法基础应用 - 简单句型和时态练习",
+        # Unit 3 课程
+        "PU1-U3-L1": "语音模仿训练 - 标准发音练习",
+        "PU1-U3-L2": "日常对话练习 - 情景对话训练",
+        "PU1-U3-L3": "听力理解提升 - 短文理解练习",
+        # Unit 4 课程
+        "PU1-U4-L1": "词汇记忆技巧 - 单词联想记忆",
+        "PU1-U4-L2": "语法结构练习 - 句型变换训练",
+        "PU1-U4-L3": "口语表达训练 - 流利度提升",
+        # Unit 5 课程
+        "PU1-U5-L1": "综合技能训练 - 听说读综合练习",
+        "PU1-U5-L2": "文化背景学习 - 英语国家文化介绍",
+        "PU1-U5-L3": "实用场景对话 - 生活场景应用",
+        # Unit 6 课程
+        "PU1-U6-L1": "总结复习课程 - 知识点梳理",
+        "PU1-U6-L2": "综合能力测试 - 学习成果检验"
     }
     
     description = lesson_descriptions.get(lesson_name, f"Power up {grade_name}英语综合能力提升课程")
