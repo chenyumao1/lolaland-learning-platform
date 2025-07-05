@@ -1155,7 +1155,7 @@ def show_power_up_lesson_detail_page():
         else:
             lesson_display = lesson_name.replace('PU1-U1-', 'Unit ')
         grade_name = "一年级"
-        grade_folder = "Grade 1"
+        grade_folder = "Grade 1 "
     else:
         if 'PU1-U2-L1' in lesson_name:
             lesson_display = 'Unit 1'
@@ -1239,7 +1239,7 @@ def show_power_up_unit_detail_page():
     st.markdown(f'<h1 style="text-align: center; color: #4facfe; font-size: 3rem; margin-bottom: 2rem;">⚡ Power up {grade} - {unit_display}</h1>', unsafe_allow_html=True)
     
     # 读取Unit文件夹中的音频文件
-    unit_path = f"videos/PowerUp/Grade {grade[1]} /{unit_folder}"
+    unit_path = f"videos/PowerUp/Grade 1 /{unit_folder}"
     audio_files = []
     
     if os.path.exists(unit_path):
