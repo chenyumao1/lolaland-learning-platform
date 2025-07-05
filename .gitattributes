@@ -1,2 +1,1 @@
-*.wav filter=lfs diff=lfs merge=lfs -text
-*.mp3 filter=lfs diff=lfs merge=lfs -text
+# Git LFS配置已移除，直接使用Git存储音频文件
