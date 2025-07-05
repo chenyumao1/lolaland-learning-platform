@@ -591,6 +591,8 @@ if 'selected_power_up_grade' not in st.session_state:
     st.session_state.selected_power_up_grade = None
 if 'selected_power_up_lesson' not in st.session_state:
     st.session_state.selected_power_up_lesson = None
+if 'selected_power_up_unit' not in st.session_state:
+    st.session_state.selected_power_up_unit = None
 
 def show_phonics_tab():
     """显示Phonics课程标签页"""
@@ -822,6 +824,8 @@ def show_power_up_tab():
     
     if st.session_state.power_up_page == 'lesson_detail':
         show_power_up_lesson_detail_page()
+    elif st.session_state.power_up_page == 'unit_detail':
+        show_power_up_unit_detail_page()
     else:
         # 显示课程主页
         st.markdown('<h2 style="text-align: center; color: #4facfe; font-size: 2.5rem; margin-bottom: 2rem;">⚡ Power up</h2>', unsafe_allow_html=True)
@@ -1024,19 +1028,19 @@ def show_power_up_g1_content():
     """显示Power up G1课程内容"""
     st.markdown('<h3 style="color: #667eea; margin-bottom: 2rem;">🎵 G1 一年级课程</h3>', unsafe_allow_html=True)
     
-    # 从文件夹读取音频文件
-    audio_folder = "videos/PowerUp/Grade 1"
-    audio_files = []
+    # 从文件夹读取Unit文件夹
+    grade_folder = "videos/PowerUp/Grade 1 "
+    units = []
     
-    if os.path.exists(audio_folder):
-        for file in os.listdir(audio_folder):
-            if file.endswith('.mp3'):
-                audio_files.append(file)
+    if os.path.exists(grade_folder):
+        for item in os.listdir(grade_folder):
+            if os.path.isdir(os.path.join(grade_folder, item)) and item.startswith('Unit'):
+                units.append(item)
     
-    audio_files.sort()  # 排序文件名
+    units.sort()  # 排序Unit文件夹
     
-    if not audio_files:
-        st.info("暂无G1课程音频文件")
+    if not units:
+        st.info("暂无G1课程Unit文件夹")
         return
     
     # 显示课程描述
@@ -1047,34 +1051,34 @@ def show_power_up_g1_content():
         <p>适合一年级学生的英语综合能力提升课程</p>
         <p>目前已有 {0} 个Unit，总共9个Unit（更多内容即将上线）</p>
     </div>
-    """.format(len(audio_files)), unsafe_allow_html=True)
+    """.format(len(units)), unsafe_allow_html=True)
     
-    # 创建音频课程网格
+    # 创建Unit课程网格
     cols_per_row = 3
-    rows = [audio_files[i:i+cols_per_row] for i in range(0, len(audio_files), cols_per_row)]
+    rows = [units[i:i+cols_per_row] for i in range(0, len(units), cols_per_row)]
     
     for row_index, row in enumerate(rows):
         cols = st.columns(cols_per_row)
-        for col_index, audio_file in enumerate(row):
+        for col_index, unit_folder in enumerate(row):
             with cols[col_index]:
-                # 从文件名提取课程信息
-                lesson_name = audio_file.replace('.wav', '').replace('.mp3', '')
-                if 'PU1-U1-L1' in lesson_name:
-                    lesson_display = 'Unit 1'
-                elif 'PU1-U1-L2' in lesson_name:
-                    lesson_display = 'Unit 2'
-                elif 'PU1-U1-L3' in lesson_name:
-                    lesson_display = 'Unit 3'
-                else:
-                    lesson_display = lesson_name.replace('PU1-U1-', 'Unit ')
+                # 从文件夹名提取Unit信息
+                unit_display = unit_folder.replace('Unit ', 'Unit ')
                 
-                if st.button(f"🎵 {lesson_display}", key=f"g1_{audio_file}", use_container_width=True):
-                    st.session_state.selected_power_up_lesson = audio_file
+                # 统计该Unit下的音频文件数量
+                unit_path = os.path.join(grade_folder, unit_folder)
+                audio_count = 0
+                if os.path.exists(unit_path):
+                    for file in os.listdir(unit_path):
+                        if file.endswith('.mp3') or file.endswith('.wav'):
+                            audio_count += 1
+                
+                if st.button(f"🎵 {unit_display}", key=f"g1_{unit_folder}", use_container_width=True):
+                    st.session_state.selected_power_up_unit = unit_folder
                     st.session_state.selected_power_up_grade = "G1"
-                    st.session_state.power_up_page = 'lesson_detail'
+                    st.session_state.power_up_page = 'unit_detail'
                     st.rerun()
                 
-                st.markdown(f'<div style="text-align: center; margin-top: 0.5rem; color: #666; font-size: 0.9rem;">{lesson_name}</div>', unsafe_allow_html=True)
+                st.markdown(f'<div style="text-align: center; margin-top: 0.5rem; color: #666; font-size: 0.9rem;">{audio_count} 个课程</div>', unsafe_allow_html=True)
 
 def show_power_up_g2_content():
     """显示Power up G2课程内容"""
@@ -1167,11 +1171,25 @@ def show_power_up_lesson_detail_page():
     # 创建音频容器
     st.markdown('<div class="video-container">', unsafe_allow_html=True)
     
-    # 音频文件路径
-    audio_path = f"videos/PowerUp/{grade_folder}/{lesson_file}"
+    # 音频文件路径 - 需要在Unit文件夹中查找
+    audio_path = None
+    unit_folder = st.session_state.selected_power_up_unit
     
-    if os.path.exists(audio_path):
-        st.audio(audio_path, format="audio/mpeg")
+    if unit_folder:
+        # 新的文件结构：在Unit文件夹中
+        audio_path = f"videos/PowerUp/{grade_folder}/{unit_folder}/{lesson_file}"
+    else:
+        # 旧的文件结构：直接在Grade文件夹中
+        audio_path = f"videos/PowerUp/{grade_folder}/{lesson_file}"
+    
+    if audio_path and os.path.exists(audio_path):
+        # 根据文件扩展名选择正确的格式
+        if lesson_file.endswith('.mp3'):
+            st.audio(audio_path, format="audio/mpeg")
+        elif lesson_file.endswith('.wav'):
+            st.audio(audio_path, format="audio/wav")
+        else:
+            st.audio(audio_path)
     else:
         st.error(f"音频文件未找到: {audio_path}")
     
@@ -1204,6 +1222,73 @@ def show_power_up_lesson_detail_page():
         </div>
     </div>
     """, unsafe_allow_html=True)
+
+def show_power_up_unit_detail_page():
+    """显示Power up Unit详情页面"""
+    grade = st.session_state.selected_power_up_grade
+    unit_folder = st.session_state.selected_power_up_unit
+    
+    if st.button("← 返回课程列表", key="back_power_up_unit"):
+        st.session_state.power_up_page = 'levels'
+        st.rerun()
+    
+    # 显示Unit标题
+    unit_display = unit_folder.replace('Unit ', 'Unit ')
+    grade_name = "一年级" if grade == "G1" else "二年级"
+    
+    st.markdown(f'<h1 style="text-align: center; color: #4facfe; font-size: 3rem; margin-bottom: 2rem;">⚡ Power up {grade} - {unit_display}</h1>', unsafe_allow_html=True)
+    
+    # 读取Unit文件夹中的音频文件
+    unit_path = f"videos/PowerUp/Grade {grade[1]} /{unit_folder}"
+    audio_files = []
+    
+    if os.path.exists(unit_path):
+        for file in os.listdir(unit_path):
+            if file.endswith('.mp3') or file.endswith('.wav'):
+                audio_files.append(file)
+    
+    audio_files.sort()  # 排序文件名
+    
+    if not audio_files:
+        st.info(f"暂无{unit_display}音频文件")
+        return
+    
+    # 显示Unit描述
+    st.markdown(f"""
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                padding: 2rem; border-radius: 20px; text-align: center; color: white; margin-bottom: 2rem;">
+        <h4>🌟 {unit_display} 课程</h4>
+        <p>{grade_name}英语综合能力提升课程</p>
+        <p>共有 {len(audio_files)} 个音频课程</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # 创建音频课程网格
+    cols_per_row = 3
+    rows = [audio_files[i:i+cols_per_row] for i in range(0, len(audio_files), cols_per_row)]
+    
+    for row_index, row in enumerate(rows):
+        cols = st.columns(cols_per_row)
+        for col_index, audio_file in enumerate(row):
+            with cols[col_index]:
+                # 从文件名提取课程信息
+                lesson_name = audio_file.replace('.wav', '').replace('.mp3', '')
+                # 提取Lesson编号
+                if 'L1' in lesson_name:
+                    lesson_display = 'Lesson 1'
+                elif 'L2' in lesson_name:
+                    lesson_display = 'Lesson 2'
+                elif 'L3' in lesson_name:
+                    lesson_display = 'Lesson 3'
+                else:
+                    lesson_display = lesson_name
+                
+                if st.button(f"🎵 {lesson_display}", key=f"unit_{audio_file}", use_container_width=True):
+                    st.session_state.selected_power_up_lesson = audio_file
+                    st.session_state.power_up_page = 'lesson_detail'
+                    st.rerun()
+                
+                st.markdown(f'<div style="text-align: center; margin-top: 0.5rem; color: #666; font-size: 0.9rem;">{lesson_name}</div>', unsafe_allow_html=True)
 
 # 主程序逻辑
 def main():
