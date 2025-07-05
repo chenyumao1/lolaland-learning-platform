@@ -1026,6 +1026,15 @@ def show_grammar_writing_tab():
 
 def show_power_up_g1_content():
     """显示Power up G1课程内容"""
+    # 面包屑导航
+    st.markdown(f"""
+    <div style="background: rgba(79, 172, 254, 0.1); padding: 1rem; border-radius: 15px; margin-bottom: 1rem;">
+        <div style="color: #4facfe; font-size: 1.1rem;">
+            📍 <strong>当前位置:</strong> Power up → G1 一年级
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
     st.markdown('<h3 style="color: #667eea; margin-bottom: 2rem;">🎵 G1 一年级课程</h3>', unsafe_allow_html=True)
     
     # 从文件夹读取Unit文件夹
@@ -1082,6 +1091,15 @@ def show_power_up_g1_content():
 
 def show_power_up_g2_content():
     """显示Power up G2课程内容"""
+    # 面包屑导航
+    st.markdown(f"""
+    <div style="background: rgba(79, 172, 254, 0.1); padding: 1rem; border-radius: 15px; margin-bottom: 1rem;">
+        <div style="color: #4facfe; font-size: 1.1rem;">
+            📍 <strong>当前位置:</strong> Power up → G2 二年级
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
     st.markdown('<h3 style="color: #667eea; margin-bottom: 2rem;">🎵 G2 二年级课程</h3>', unsafe_allow_html=True)
     
     # 从文件夹读取音频文件
@@ -1138,10 +1156,32 @@ def show_power_up_lesson_detail_page():
     """显示Power up课程详情页面"""
     grade = st.session_state.selected_power_up_grade
     lesson_file = st.session_state.selected_power_up_lesson
+    unit_folder = st.session_state.selected_power_up_unit
     
-    if st.button("← 返回课程列表", key="back_power_up"):
-        st.session_state.power_up_page = 'levels'
-        st.rerun()
+    # 面包屑导航
+    grade_name = "一年级" if grade == "G1" else "二年级"
+    unit_display = unit_folder.replace('Unit ', 'Unit ') if unit_folder else ""
+    
+    # 显示面包屑导航
+    st.markdown(f"""
+    <div style="background: rgba(79, 172, 254, 0.1); padding: 1rem; border-radius: 15px; margin-bottom: 1rem;">
+        <div style="color: #4facfe; font-size: 1.1rem;">
+            📍 <strong>当前位置:</strong> Power up → {grade} {grade_name} → {unit_display} → 课程详情
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # 返回按钮 - 分别返回不同层级
+    col1, col2, col3 = st.columns([1, 1, 2])
+    with col1:
+        if st.button("← 返回Unit", key="back_to_unit"):
+            st.session_state.power_up_page = 'unit_detail'
+            st.rerun()
+    with col2:
+        if st.button("← 返回年级", key="back_to_grade"):
+            st.session_state.power_up_page = 'levels'
+            st.session_state.selected_power_up_unit = None
+            st.rerun()
     
     # 从文件名提取课程信息
     lesson_name = lesson_file.replace('.wav', '').replace('.mp3', '')
@@ -1245,8 +1285,22 @@ def show_power_up_unit_detail_page():
     grade = st.session_state.selected_power_up_grade
     unit_folder = st.session_state.selected_power_up_unit
     
-    if st.button("← 返回课程列表", key="back_power_up_unit"):
+    # 面包屑导航
+    grade_name = "一年级" if grade == "G1" else "二年级"
+    unit_display = unit_folder.replace('Unit ', 'Unit ')
+    
+    # 显示面包屑导航
+    st.markdown(f"""
+    <div style="background: rgba(79, 172, 254, 0.1); padding: 1rem; border-radius: 15px; margin-bottom: 1rem;">
+        <div style="color: #4facfe; font-size: 1.1rem;">
+            📍 <strong>当前位置:</strong> Power up → {grade} {grade_name} → {unit_display}
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    if st.button("← 返回年级选择", key="back_power_up_unit"):
         st.session_state.power_up_page = 'levels'
+        st.session_state.selected_power_up_unit = None
         st.rerun()
     
     # 显示Unit标题
