@@ -151,9 +151,6 @@ def show_login_page():
         <h1 class="cute-title">🌟 Lolaland 🌈</h1>
         <p class="cute-subtitle">💫 英语学习乐园 💫</p>
         <p style="color: #9c88ff; font-size: 1.1rem; font-style: italic; margin-bottom: 1rem;">✨ Learning is always in play ✨</p>
-        <div style="font-size: 1.5rem; margin-top: 1rem;">
-            🎀 🌸 🦋 🌺 🎈 🌙 ⭐ 🌟
-        </div>
     </div>
     """, unsafe_allow_html=True)
     
@@ -208,9 +205,6 @@ def show_login_page():
         <div style="text-align: center; margin-top: 2rem; color: #ff6b9d;">
             <div style="font-size: 1rem; margin-bottom: 0.5rem;">
                 ✨ 让我们一起快乐学英语吧！✨
-            </div>
-            <div style="font-size: 1.3rem;">
-                🌟 💖 🌈 🦄 🎀 🌸 💫 ⭐
             </div>
         </div>
         """, unsafe_allow_html=True)
