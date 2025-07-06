@@ -150,6 +150,7 @@ def show_login_page():
         </div>
         <h1 class="cute-title">🌟 Lolaland 🌈</h1>
         <p class="cute-subtitle">💫 英语学习乐园 💫</p>
+        <p style="color: #9c88ff; font-size: 1.1rem; font-style: italic; margin-bottom: 1rem;">✨ Learning is always in play ✨</p>
         <div style="font-size: 1.5rem; margin-top: 1rem;">
             🎀 🌸 🦋 🌺 🎈 🌙 ⭐ 🌟
         </div>
@@ -1377,6 +1378,7 @@ def main():
     # 主标题和副标题
     st.markdown('<h1 class="main-title">🌟 Lolaland 🌈</h1>', unsafe_allow_html=True)
     st.markdown('<div class="subtitle">💫 英语学习乐园 - 让小朋友爱上英语 🎀</div>', unsafe_allow_html=True)
+    st.markdown('<div style="text-align: center; color: #ff6b9d; font-size: 1.2rem; font-style: italic; margin-bottom: 1rem; font-weight: 500;">✨ Learning is always in play ✨</div>', unsafe_allow_html=True)
     
     # 欢迎用户
     if st.session_state.user_data:
