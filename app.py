@@ -170,9 +170,6 @@ def show_login_page():
             <h3 style="color: #ff6b9d; margin-bottom: 1rem; font-size: 1.8rem;">
                 🔐 欢迎登录 
             </h3>
-            <div style="font-size: 1.2rem; margin-bottom: 2rem;">
-                🌈 🎨 🎪 🎭 🎪 🎨 🌈
-            </div>
         </div>
         """, unsafe_allow_html=True)
         
