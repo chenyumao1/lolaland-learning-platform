@@ -1381,9 +1381,6 @@ def main():
                 <span style="color: #ff6b9d; font-size: 1.5rem; font-weight: bold;">
                     🎉 欢迎回来，{user_name}！🎉
                 </span>
-                <div style="margin-top: 0.5rem; font-size: 1.2rem;">
-                    🌸 ✨ 🦄 💖 🌟 ✨ 🌸
-                </div>
             </div>
         </div>
         ''', unsafe_allow_html=True)
