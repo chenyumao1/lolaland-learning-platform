@@ -149,8 +149,8 @@ def show_login_page():
             <div class="heart">🦄</div>
         </div>
         <h1 class="cute-title">🌟 Lolaland 🌈</h1>
-        <p class="cute-subtitle">💫 英语学习乐园 💫</p>
-        <p style="color: #9c88ff; font-size: 1.1rem; font-style: italic; margin-bottom: 1rem;">✨ Learning is always in play ✨</p>
+        <p class="cute-subtitle">💫 英文成长空间 💫</p>
+        <p style="color: #9c88ff; font-size: 1.1rem; font-style: italic; margin-bottom: 1rem;">✨ From Sounds to Stories — A Podcast for Growing Readers ✨</p>
     </div>
     """, unsafe_allow_html=True)
     
@@ -1070,7 +1070,7 @@ def show_power_up_g1_content():
                 audio_count = 0
                 if os.path.exists(unit_path):
                     for file in os.listdir(unit_path):
-                        if file.endswith('.mp3') or file.endswith('.wav'):
+                        if file.endswith('.mp3') or file.endswith('.wav') or file.endswith('.m4a'):
                             audio_count += 1
                 
                 if st.button(f"🎵 {unit_display}", key=f"g1_{unit_folder}", use_container_width=True):
@@ -1100,7 +1100,7 @@ def show_power_up_g2_content():
     
     if os.path.exists(audio_folder):
         for file in os.listdir(audio_folder):
-            if file.endswith('.mp3'):
+            if file.endswith('.mp3') or file.endswith('.wav') or file.endswith('.m4a'):
                 audio_files.append(file)
     
     audio_files.sort()  # 排序文件名
@@ -1220,6 +1220,8 @@ def show_power_up_lesson_detail_page():
             st.audio(audio_path, format="audio/mpeg")
         elif lesson_file.endswith('.wav'):
             st.audio(audio_path, format="audio/wav")
+        elif lesson_file.endswith('.m4a'):
+            st.audio(audio_path, format="audio/mp4")
         else:
             st.audio(audio_path)
     else:
@@ -1307,7 +1309,7 @@ def show_power_up_unit_detail_page():
     
     if os.path.exists(unit_path):
         for file in os.listdir(unit_path):
-            if file.endswith('.mp3') or file.endswith('.wav'):
+            if file.endswith('.mp3') or file.endswith('.wav') or file.endswith('.m4a'):
                 audio_files.append(file)
     
     audio_files.sort()  # 排序文件名
@@ -1368,7 +1370,7 @@ def main():
     
     # 主标题和副标题
     st.markdown('<h1 class="main-title">🌟 Lolaland 🌈</h1>', unsafe_allow_html=True)
-    st.markdown('<div class="subtitle">💫 英语学习乐园 - 让小朋友爱上英语 🎀</div>', unsafe_allow_html=True)
+    st.markdown('<div class="subtitle">💫 英文成长空间 - 让小朋友爱上英语 🎀</div>', unsafe_allow_html=True)
     st.markdown('<div style="text-align: center; color: #ff6b9d; font-size: 1.2rem; font-style: italic; margin-bottom: 1rem; font-weight: 500;">✨ Learning is always in play ✨</div>', unsafe_allow_html=True)
     
     # 欢迎用户
